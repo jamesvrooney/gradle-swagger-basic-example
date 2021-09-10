@@ -1,0 +1,41 @@
+openapi: 3.0.2
+
+info:
+  version: 0.0.1
+  title: Library Service
+  description: This is the library service API
+
+tags:
+  - Library
+
+paths:
+  /library/books:
+    get:
+      summary: This return a list of all books in the library.
+      tags:
+        - Library
+      description: Return a list of all library books.
+      operationId: getAllBooks
+      responses:
+        '200':
+          description: Returns all books successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+
+components:
+  schemas:
+    Book:
+      description: This is what a book looks like.
+      type: object
+      properties:
+        name:
+          description: The name of the book.
+          type: string
+        author:
+          description: The author of the book.
+          type: string
+

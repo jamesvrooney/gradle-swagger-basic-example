@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
 group = 'com.example'
@@ -20,10 +21,39 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'io.swagger.codegen.v3:swagger-codegen:3.0.27'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.5.10'
+
+
+	implementation 'io.swagger.core.v3:swagger-annotations:2.1.10'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	swaggerCodegen 'io.swagger.codegen.v3:swagger-codegen-cli:3.0.5'
+
+
+
 }
+
+swaggerSources {
+	petstore {
+//		inputFile = file('petstore.yaml')
+		inputFile = file("${rootDir}/src/main/resources/library-api.yaml")
+		code {
+			language = 'spring'
+			configFile = file('config.json')
+			components = ['models', 'apis']
+		}
+	}
+}
+
+// Configure compile task dependency and source
+compileJava.dependsOn swaggerSources.petstore.code
+sourceSets.main.java.srcDir "${swaggerSources.petstore.code.outputDir}/src/main/java"
+sourceSets.main.resources.srcDir "${swaggerSources.petstore.code.outputDir}/src/main/resources"
 
 test {
 	useJUnitPlatform()
